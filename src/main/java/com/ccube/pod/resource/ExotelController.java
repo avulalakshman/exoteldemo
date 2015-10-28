@@ -34,7 +34,7 @@ public class ExotelController {
 	@GET
 	public Response verifyNumber(@Context UriInfo uriInfo) {
 		MultivaluedMap<String, String> queryParams=uriInfo.getQueryParameters();
-		System.out.println("Query Params :{"+queryParams+"}");
+		System.out.println("Query Params from Verify number API :{"+queryParams+"}");
 		return Response.status(200).build();
 	}
 	
@@ -42,9 +42,9 @@ public class ExotelController {
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
 	public String getDailToNumber(@Context UriInfo uriInfo) {
-		String mobileNumber="+919945529337";
+		String mobileNumber="09945529337";
 		MultivaluedMap<String, String> queryParams=uriInfo.getQueryParameters();
-		System.out.println("Query Params :{"+queryParams+"}");
+		System.out.println("Query Params from Get Dail to Number API:{"+queryParams+"}");
 		return mobileNumber;
 	}
 		
