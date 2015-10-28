@@ -42,7 +42,7 @@ public class ExotelController {
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
 	public String getDailToNumber(@Context UriInfo uriInfo) {
-		String mobileNumber="09945529337";
+		String mobileNumber="+919945529337";
 		MultivaluedMap<String, String> queryParams=uriInfo.getQueryParameters();
 		System.out.println("Query Params :{"+queryParams+"}");
 		return mobileNumber;
