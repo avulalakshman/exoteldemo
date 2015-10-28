@@ -1,5 +1,8 @@
 package com.ccube.pod.resource;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -20,6 +23,14 @@ import org.springframework.stereotype.Component;
 public class ExotelController {
 	
 	
+	private static int callCount=0;
+	private static List<String> numbers=null;
+	static{
+		numbers=new ArrayList<>();
+		numbers.add("08951586661");
+		numbers.add("09945529337");
+		numbers.add("09880366899");
+	}
 	
 	@Path("/initiatecall")
 	@POST
@@ -42,10 +53,19 @@ public class ExotelController {
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
 	public String getDailToNumber(@Context UriInfo uriInfo) {
-		String mobileNumber="09945529337";
+		String mobileNumber=getMobileNumber();
 		MultivaluedMap<String, String> queryParams=uriInfo.getQueryParameters();
 		System.out.println("Query Params from Get Dail to Number API:{"+queryParams+"}");
 		return mobileNumber;
+	}
+	
+	
+	
+	private String getMobileNumber(){
+			if(callCount<numbers.size()){
+				return numbers.get(callCount++);
+			}
+			throw new IllegalArgumentException("Max number of connections reached");
 	}
 		
 }
