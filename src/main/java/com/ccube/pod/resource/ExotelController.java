@@ -24,12 +24,6 @@ public class ExotelController {
 	
 	
 	private static int callCount=0;
-	private static List<String> numbers=null;
-	static{
-		numbers=new ArrayList<>();
-		numbers.add("09945529337");
-		numbers.add("09880366899");
-	}
 	
 	@Path("/initiatecall")
 	@POST
@@ -52,7 +46,7 @@ public class ExotelController {
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
 	public String getDailToNumber(@Context UriInfo uriInfo) {
-		String mobileNumber=getMobileNumber();
+		String mobileNumber="09945529337";
 		MultivaluedMap<String, String> queryParams=uriInfo.getQueryParameters();
 		System.out.println("Query Params from Get Dail to Number API:{"+queryParams+"}");
 		return mobileNumber;
@@ -61,33 +55,21 @@ public class ExotelController {
 	@Path("/oncallcompleted")
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
-	public String onCallCompleted(@Context UriInfo uriInfo) {
-		String mobileNumber=getMobileNumber();
+	public Response onCallCompleted(@Context UriInfo uriInfo) {
 		MultivaluedMap<String, String> queryParams=uriInfo.getQueryParameters();
 		System.out.println("Query Params from onCallCompleted API:{"+queryParams+"}");
-		return mobileNumber;
+		return Response.status(200).build();
 	}
 	
 	
 	@Path("/onnoanswer")
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
-	public String onNoAnswer(@Context UriInfo uriInfo) {
-		String mobileNumber=getMobileNumber();
+	public Response onNoAnswer(@Context UriInfo uriInfo) {
 		MultivaluedMap<String, String> queryParams=uriInfo.getQueryParameters();
 		System.out.println("Query Params from onnoanswer:{"+queryParams+"}");
-		return mobileNumber;
+		return Response.status(200).build();
 	}
-		
-	private String getMobileNumber(){
-			if(callCount<numbers.size()){
-				return numbers.get(callCount++);
-			}{
-				callCount=0;
-				return numbers.get(callCount++);
-				
-			}
-			
-	}
+	
 		
 }
