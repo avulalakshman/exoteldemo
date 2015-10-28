@@ -64,8 +64,12 @@ public class ExotelController {
 	private String getMobileNumber(){
 			if(callCount<numbers.size()){
 				return numbers.get(callCount++);
+			}{
+				callCount=0;
+				return numbers.get(callCount++);
+				
 			}
-			throw new IllegalArgumentException("Max number of connections reached");
+			
 	}
 		
 }
