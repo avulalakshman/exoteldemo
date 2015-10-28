@@ -27,7 +27,6 @@ public class ExotelController {
 	private static List<String> numbers=null;
 	static{
 		numbers=new ArrayList<>();
-		numbers.add("08951586661");
 		numbers.add("09945529337");
 		numbers.add("09880366899");
 	}
@@ -59,8 +58,27 @@ public class ExotelController {
 		return mobileNumber;
 	}
 	
+	@Path("/oncallcompleted")
+	@GET
+	@Produces(MediaType.TEXT_PLAIN)
+	public String onCallCompleted(@Context UriInfo uriInfo) {
+		String mobileNumber=getMobileNumber();
+		MultivaluedMap<String, String> queryParams=uriInfo.getQueryParameters();
+		System.out.println("Query Params from onCallCompleted API:{"+queryParams+"}");
+		return mobileNumber;
+	}
 	
 	
+	@Path("/onnoanswer")
+	@GET
+	@Produces(MediaType.TEXT_PLAIN)
+	public String onNoAnswer(@Context UriInfo uriInfo) {
+		String mobileNumber=getMobileNumber();
+		MultivaluedMap<String, String> queryParams=uriInfo.getQueryParameters();
+		System.out.println("Query Params from onnoanswer:{"+queryParams+"}");
+		return mobileNumber;
+	}
+		
 	private String getMobileNumber(){
 			if(callCount<numbers.size()){
 				return numbers.get(callCount++);
