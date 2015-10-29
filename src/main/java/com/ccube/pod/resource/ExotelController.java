@@ -75,7 +75,7 @@ public class ExotelController {
 			return Response.ok().build();
 		}
 
-		return Response.status(Status.NO_CONTENT).build();
+		return Response.status(404).build();
 	}
 
 	@Path("/verifynumber")
@@ -139,7 +139,14 @@ public class ExotelController {
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response onNoAnswer(@Context UriInfo uriInfo) {
 		MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
-		System.out.println("Query Params from onCallCompleted API:{" + queryParams + "}");
+		String callSid = queryParams.getFirst("CallSid");
+		CallDetails callDetails = currentCalls.get(callSid);
+		String timeSec = queryParams.getFirst("Duration");
+		currentCalls.remove(callSid);
+		
+		System.out.println(callDetails.getUser().getMobile() + " made call : " + callDetails.getReceiver().getMobile()
+				+ " Time in seconds " + timeSec);
+		System.out.println("Current calls :"+currentCalls);
 		return Response.status(200).build();
 	}
 
