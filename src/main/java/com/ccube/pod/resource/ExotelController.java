@@ -83,13 +83,18 @@ public class ExotelController {
 	public Response verifyNumber(@Context UriInfo uriInfo) {
 		MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
 		String from = queryParams.getFirst("From");
-
+		System.out.println("Number to be verified..." + from);
 		CallDetails callDetails = callDetailsMap.get(from);
+		
 		if (callDetails != null) {
 			String callSid = queryParams.getFirst("CallSid");
+			System.out.println("Call sid ..."+callSid);
 			callDetails.setStatus("VERIFIED");
 			callDetailsMap.remove(from);
 			currentCalls.put(callSid, callDetails);
+		} else {
+			System.out.println("Call Details Not found, User not found");
+			return Response.status(404).build();
 		}
 		System.out.println("Current calls :"+currentCalls);
 		System.out.println("Query Params from Verify number API :{" + queryParams + "}");
@@ -101,12 +106,13 @@ public class ExotelController {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String getDailToNumber(@Context UriInfo uriInfo) {
 		MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
+		System.out.println("Query params of getDialToNumber..." + queryParams );
 		String callSid = queryParams.getFirst("CallSid");
 		CallDetails callDetails = currentCalls.get(callSid);
 		callDetails.setStatus("INPROGRESS");
-		String passThru = queryParams.getFirst("passThru");
+		String passThru = queryParams.getFirst("passthru");
 		if(passThru!=null){
-			System.out.println("PassThru is called");
+			System.out.println("PassThru is part of params...");
 		}
 		System.out.println("Call Sid :"+callSid+" and Call Details :"+callDetails);
 		return callDetails.getReceiver().getMobile();
