@@ -17,6 +17,8 @@ public class ReceiverRepositoryImpl implements ReceiverRepository {
 		receiversList.add(new Receiver(9001, "Lakshman", "09036102111"));
 		receiversList.add(new Receiver(9002, "Chakra", "08951586661"));
 		receiversList.add(new Receiver(9003, "Pradeep", "09945529337"));
+		receiversList.add(new Receiver(9004, "Sujay", "09945678529"));
+		receiversList.add(new Receiver(9005, "Biju", "09880892458"));
 	}
 
 	@Override
