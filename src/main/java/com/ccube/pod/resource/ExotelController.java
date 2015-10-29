@@ -45,6 +45,7 @@ public class ExotelController {
 	@Produces(value = { MediaType.APPLICATION_JSON })
 	public List<Receiver> getAllReceivers() {
 		List<Receiver> receiversList = receiverService.listAllReceivers();
+		System.out.println("Receivers List :"+receiversList);
 		return receiversList;
 	}
 
@@ -53,6 +54,7 @@ public class ExotelController {
 	public long getUserIdByName(@QueryParam("name") String name) {
 		System.out.println("User name :"+name);
 		long uid = userService.getUserIdByName(name);
+		System.out.println("User id return by the name is  :"+uid);
 		return uid;
 	}
 
@@ -69,7 +71,7 @@ public class ExotelController {
 			obj.setStatus("CALLING");
 			System.out.println(user.getFullName()+" is try to call :"+receiver.getFullName());
 			callDetailsMap.put(user.getMobile(),obj);
-			System.out.println("In queue - >"+callDetailsMap);
+			System.out.println("In queue  - >"+callDetailsMap);
 			return Response.ok().build();
 		}
 
@@ -89,6 +91,7 @@ public class ExotelController {
 			callDetailsMap.remove(from);
 			currentCalls.put(callSid, callDetails);
 		}
+		System.out.println("Current calls :"+currentCalls);
 		System.out.println("Query Params from Verify number API :{" + queryParams + "}");
 		return Response.status(200).build();
 	}
@@ -105,6 +108,7 @@ public class ExotelController {
 		if(passThru!=null){
 			System.out.println("PassThru is called");
 		}
+		System.out.println("Call Sid :"+callSid+" and Call Details :"+callDetails);
 		return callDetails.getReceiver().getMobile();
 	}
 
@@ -117,9 +121,10 @@ public class ExotelController {
 		CallDetails callDetails = currentCalls.get(callSid);
 		String timeSec = queryParams.getFirst("Duration");
 		currentCalls.remove(callSid);
-
+		
 		System.out.println(callDetails.getUser().getMobile() + " made call : " + callDetails.getReceiver().getMobile()
 				+ " Time in seconds " + timeSec);
+		System.out.println("Current calls :"+currentCalls);
 		return Response.status(200).build();
 	}
 
@@ -143,7 +148,7 @@ public class ExotelController {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Map<String,CallDetails> allCurrentCalls() {
-			return callDetailsMap;
+			return currentCalls;
 	}
 
 	public ReceiverService getReceiverService() {
