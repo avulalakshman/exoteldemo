@@ -1,4 +1,4 @@
-package com.cube.pod;
+package com.ccube.pod;
 
 import org.glassfish.jersey.server.ResourceConfig;
 import org.springframework.context.annotation.Configuration;

@@ -1,4 +1,4 @@
-package com.cube.pod;
+package com.ccube.pod;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.web.SpringBootServletInitializer;
