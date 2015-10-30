@@ -46,4 +46,17 @@ public class UserRepositoryImpl implements UserRepository {
 		return null;
 	}
 
+	@Override
+	public User addUser(User user) {
+		if (user != null) {
+			user.setUid(IdGenerator.getUid());
+		}
+		boolean isAdded =users.add(user);
+		if (isAdded) {
+			return user;
+		}else{
+			throw new IllegalArgumentException("Unable to add the User:"+user);
+		}
+	}
+
 }

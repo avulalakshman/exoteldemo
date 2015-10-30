@@ -8,5 +8,6 @@ public interface ReceiverService {
 		
 			public List<Receiver> listAllReceivers();
 			public Receiver getReceiver(long rid);
+			public Receiver addReceiver(Receiver receiver);
 			
 }

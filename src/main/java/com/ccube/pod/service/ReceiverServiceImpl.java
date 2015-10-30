@@ -41,6 +41,15 @@ public class ReceiverServiceImpl implements ReceiverService {
 		
 	}
 
+	@Override
+	public Receiver addReceiver(Receiver receiver) {
+		try{
+			receiver=receiverRepository.addReceiver(receiver);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return receiver;
+	}
 	public ReceiverRepository getReceiverRepository() {
 		return receiverRepository;
 	}
@@ -48,5 +57,7 @@ public class ReceiverServiceImpl implements ReceiverService {
 	public void setReceiverRepository(ReceiverRepository receiverRepository) {
 		this.receiverRepository = receiverRepository;
 	}
+
+	
 
 }

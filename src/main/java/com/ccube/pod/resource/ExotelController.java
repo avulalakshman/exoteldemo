@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -13,11 +14,13 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.log4j.spi.LoggerFactory;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.ccube.pod.domain.CallDetails;
 import com.ccube.pod.domain.Receiver;
@@ -26,9 +29,9 @@ import com.ccube.pod.service.ReceiverService;
 import com.ccube.pod.service.UserService;
 
 @Component
-@Path("/exotel")
 @Consumes(value = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.TEXT_PLAIN })
 @Produces(value = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+@Path("/")
 public class ExotelController {
 	@Autowired
 	private ReceiverService receiverService;
@@ -36,25 +39,46 @@ public class ExotelController {
 	@Autowired
 	private UserService userService;
 
-	private Map<String,CallDetails> callDetailsMap = new HashMap<>();
+	private Map<String, CallDetails> callDetailsMap = new HashMap<>();
 
 	private Map<String, CallDetails> currentCalls = new HashMap<>();
 
+	
+	private static final Logger LOGGER=org.slf4j.LoggerFactory.getLogger(ExotelController.class.getName());
+	
+	@Path("/addreceiver")
+	@POST
+	@Produces(value = { MediaType.APPLICATION_JSON })
+	@Consumes(value = { MediaType.APPLICATION_JSON })
+	public Receiver addReceiver(Receiver receiver) {
+		receiver=receiverService.addReceiver(receiver);
+		return receiver;
+	}
+	
+	@Path("/adduser")
+	@POST
+	@Produces(value = { MediaType.APPLICATION_JSON })
+	@Consumes(value = { MediaType.APPLICATION_JSON })
+	public User addUser(User user) {
+		user=userService.addUser(user);
+		return user;
+	}
+	
 	@Path("/getallreceivers")
 	@GET
 	@Produces(value = { MediaType.APPLICATION_JSON })
 	public List<Receiver> getAllReceivers() {
 		List<Receiver> receiversList = receiverService.listAllReceivers();
-		System.out.println("Receivers List :"+receiversList);
+		LOGGER.info("Receivers List :" + receiversList);
 		return receiversList;
 	}
 
 	@Path("/getuseridbyname")
 	@GET
 	public long getUserIdByName(@QueryParam("name") String name) {
-		System.out.println("User name :"+name);
+		LOGGER.info("User name :" + name);
 		long uid = userService.getUserIdByName(name);
-		System.out.println("User id return by the name is  :"+uid);
+		LOGGER.info("User id return by the name is  :" + uid);
 		return uid;
 	}
 
@@ -69,9 +93,9 @@ public class ExotelController {
 			obj.setReceiver(receiver);
 			obj.setUser(user);
 			obj.setStatus("CALLING");
-			System.out.println(user.getFullName()+" is try to call :"+receiver.getFullName());
-			callDetailsMap.put(user.getMobile(),obj);
-			System.out.println("In queue  - >"+callDetailsMap);
+			LOGGER.info(user.getFullName() + " is try to call :" + receiver.getFullName());
+			callDetailsMap.put(user.getMobile(), obj);
+			LOGGER.info("In queue  - >" + callDetailsMap);
 			return Response.ok().build();
 		}
 
@@ -83,21 +107,21 @@ public class ExotelController {
 	public Response verifyNumber(@Context UriInfo uriInfo) {
 		MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
 		String from = queryParams.getFirst("From");
-		System.out.println("Number to be verified..." + from);
+		LOGGER.info("Number to be verified..." + from);
 		CallDetails callDetails = callDetailsMap.get(from);
-		
+
 		if (callDetails != null) {
 			String callSid = queryParams.getFirst("CallSid");
-			System.out.println("Call sid ..."+callSid);
+			LOGGER.info("Call sid ..." + callSid);
 			callDetails.setStatus("VERIFIED");
 			callDetailsMap.remove(from);
 			currentCalls.put(callSid, callDetails);
 		} else {
-			System.out.println("Call Details Not found, User not found");
+			LOGGER.info("Call Details Not found, User not found");
 			return Response.status(404).build();
 		}
-		System.out.println("Current calls :"+currentCalls);
-		System.out.println("Query Params from Verify number API :{" + queryParams + "}");
+		LOGGER.info("Current calls :" + currentCalls);
+		LOGGER.info("Query Params from Verify number API :{" + queryParams + "}");
 		return Response.status(200).build();
 	}
 
@@ -106,16 +130,34 @@ public class ExotelController {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String getDailToNumber(@Context UriInfo uriInfo) {
 		MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
-		System.out.println("Query params of getDialToNumber..." + queryParams );
+		LOGGER.info("Query params of getDialToNumber..." + queryParams);
 		String callSid = queryParams.getFirst("CallSid");
 		CallDetails callDetails = currentCalls.get(callSid);
 		callDetails.setStatus("INPROGRESS");
 		String passThru = queryParams.getFirst("passthru");
-		if(passThru!=null){
-			System.out.println("PassThru is part of params...");
+		if (passThru != null) {
+			LOGGER.info("PassThru is part of params...");
 		}
-		System.out.println("Call Sid :"+callSid+" and Call Details :"+callDetails);
-		return callDetails.getReceiver().getMobile();
+		LOGGER.info("Call Sid :" + callSid + " and Call Details :" + callDetails);
+		// Appending mobile number with the +91 
+		String mobile = getMobileNumber(callDetails.getReceiver().getMobile());
+		return mobile;
+	}
+
+	private String getMobileNumber(String mobile) {
+
+		if (mobile != null) {
+			mobile = mobile.trim();
+			if (mobile.length() == 13) {
+				return mobile;
+			} else if (mobile.length() == 11) {
+				mobile = mobile.substring(1, 10);
+				return "+91" + mobile;
+			} else if (mobile.length() == 10) {
+				return "+91" + mobile;
+			}
+		}
+		throw new IllegalArgumentException("Mobile number is not found");
 	}
 
 	@Path("/oncallcompleted")
@@ -127,10 +169,10 @@ public class ExotelController {
 		CallDetails callDetails = currentCalls.get(callSid);
 		String timeSec = queryParams.getFirst("Duration");
 		currentCalls.remove(callSid);
-		
-		System.out.println(callDetails.getUser().getMobile() + " made call : " + callDetails.getReceiver().getMobile()
+
+		LOGGER.info(callDetails.getUser().getMobile() + " made call : " + callDetails.getReceiver().getMobile()
 				+ " Time in seconds " + timeSec);
-		System.out.println("Current calls :"+currentCalls);
+		LOGGER.info("Current calls :" + currentCalls);
 		return Response.status(200).build();
 	}
 
@@ -144,24 +186,24 @@ public class ExotelController {
 		String timeSec = queryParams.getFirst("Duration");
 		currentCalls.remove(callSid);
 		
-		System.out.println(callDetails.getUser().getMobile() + " made call : " + callDetails.getReceiver().getMobile()
+		LOGGER.info(callDetails.getUser().getMobile() + " made call : " + callDetails.getReceiver().getMobile()
 				+ " Time in seconds " + timeSec);
-		System.out.println("Current calls :"+currentCalls);
+		LOGGER.info("Current calls :" + currentCalls);
 		return Response.status(200).build();
 	}
 
 	@Path("/allqueuelist")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Map<String,CallDetails> allQuequList() {
-			return callDetailsMap;
+	public Map<String, CallDetails> allQuequList() {
+		return callDetailsMap;
 	}
 
 	@Path("/allcurrentcalls")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Map<String,CallDetails> allCurrentCalls() {
-			return currentCalls;
+	public Map<String, CallDetails> allCurrentCalls() {
+		return currentCalls;
 	}
 
 	public ReceiverService getReceiverService() {

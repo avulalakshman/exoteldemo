@@ -9,5 +9,6 @@ public interface UserService {
 			public List<User> listUser();
 			public User getUser(long rid);
 			long getUserIdByName(String name);
+			public User addUser(User user);
 			
 }

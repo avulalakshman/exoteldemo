@@ -9,4 +9,5 @@ public interface UserRepository  {
 		public List<User> findAll();
 		public User getUser(long id);
 		public User getUserIdByName(String name);
+		public User addUser(User user);
 }

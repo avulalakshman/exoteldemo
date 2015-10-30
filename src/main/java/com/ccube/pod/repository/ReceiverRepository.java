@@ -8,5 +8,6 @@ public interface ReceiverRepository{
 		
 			public List<Receiver> findAll();
 			public Receiver getReceiver(long id);
+			Receiver addReceiver(Receiver receiver);
 			
 }
