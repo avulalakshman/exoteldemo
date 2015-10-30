@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Bootstrap Example</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet"
+	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script
+	src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+	<div class="container">
+		<div class="row">
+			<div class="row">
+				<div class="text-center" id="message"></div>
+			</div>
+			<div class="col-md-6">
+				<h2>Add Receiver</h2>
+				<form role="form">
+					<div class="form-group">
+						<label for="Name">Name:</label> <input type="text"
+							class="form-control" id="rname" placeholder="Enter Name">
+					</div>
+					<div class="form-group">
+						<label for="mobile">Mobile:</label> <input type="number"
+							class="form-control" id="rmobile" name="rmobile"
+							placeholder="Enter 10 digit mobile number">
+					</div>
+					<button type="button" id="addreceiver" class="btn btn-default">Add
+						Receiver</button>
+				</form>
+			</div>
+			<div class="col-md-6">
+				<h2>Add User</h2>
+				<form role="form">
+					<div class="form-group">
+						<label for="Name">Name:</label> <input type="text"
+							class="form-control" id="uname" placeholder="Enter Name">
+					</div>
+					<div class="form-group">
+						<label for="mobile">Mobile:</label> <input type="number"
+							class="form-control" id="umobile" name="umobile"
+							placeholder="Enter 10 digit mobile number">
+					</div>
+					<button type="button" id="adduser" class="btn btn-default">Add
+						User</button>
+				</form>
+
+			</div>
+		</div>
+
+	</div>
+
+	<script type="text/javascript">
+		$(function() {
+			$("#adduser")
+					.click(
+							function() {
+								var name = $("#uname").val();
+								var mobile = $("#umobile").val();
+								/*https://pure-earth-5743.herokuapp.com/exotel/adduser*/
+								var user = {
+									"fullName" : name,
+									"mobile" : mobile
+								}
+								$
+										.ajax({
+											url : "https://pure-earth-5743.herokuapp.com/exotel/adduser",
+											//url:"http://localhost:8080/exotel/adduser",
+											type : 'post',
+											dataType : 'json',
+											contentType : "application/json; charset=utf-8",
+											success : function(data) {
+												$("#message")
+														.empty()
+														.append(
+																"<div class='well'>"
+																		+ JSON
+																				.stringify(data)
+																		+ "--> [User added successfully]</div>");
+											},
+											data : JSON.stringify(user)
+										});
+							});
+
+			$("#addreceiver")
+					.click(
+							function() {
+								var name = $("#rname").val();
+								var mobile = $("#rmobile").val();
+
+								var user = {
+									"fullName" : name,
+									"mobile" : mobile
+								}
+
+								$
+										.ajax({
+											url : "https://pure-earth-5743.herokuapp.com/exotel/adreceiver",
+											//url:"http://localhost:8080/exotel/addreceiver",
+											type : 'post',
+											dataType : 'json',
+											contentType : "application/json; charset=utf-8",
+											success : function(data) {
+												$("#message")
+														.empty()
+														.append(
+																"<div class='well'>"
+																		+ JSON
+																				.stringify(data)
+																		+ "--> [Receiver added successfully]</div>");
+											},
+											data : JSON.stringify(user)
+										});
+							});
+		})
+	</script>
+</body>
+</html>
