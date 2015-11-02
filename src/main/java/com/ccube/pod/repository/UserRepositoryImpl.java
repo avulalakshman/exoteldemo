@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+import com.ccube.pod.domain.Receiver;
 import com.ccube.pod.domain.User;
 
 @Repository
@@ -57,6 +58,24 @@ public class UserRepositoryImpl implements UserRepository {
 		}else{
 			throw new IllegalArgumentException("Unable to add the User:"+user);
 		}
+	}
+
+	@Override
+	public void deleteUser(long uid) {
+		users.remove(getIndex(uid));
+	}
+	
+	private int getIndex(long uid){
+		int i=-1;
+		int count=0;
+		for (User receiver : users) {
+			if (receiver.getUid() == uid){
+				i=count;
+				return i;
+			}
+			count++;
+		}
+		return i;
 	}
 
 }

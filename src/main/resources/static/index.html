@@ -136,6 +136,19 @@
 			});
 
 		}
+		
+		function deleteReceiver(uid) {
+			var url = BASE_URL+"deletereceiver?uid=" + uid;
+
+			$.ajax({
+				url : url,
+				type : 'post',
+				success : function(data) {
+					$("#ulist").click();
+				}
+			});
+
+		}
 		function editreceiver(rid) {
 			var url = BASE_URL+"getreceiver?rid=" + rid;
 			$.ajax({
@@ -155,9 +168,7 @@
 
 		}
 
-		function deleteUser(uid) {
-
-		}
+		
 		$(function() {
 			$("#rlist")
 					.click(
@@ -272,6 +283,7 @@
 				};
 				var url = BASE_URL+"adduser";
 				var message = "User added";
+				
 				addorupdate(url, user, message);
 
 			});

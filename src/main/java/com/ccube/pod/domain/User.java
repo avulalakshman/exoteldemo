@@ -1,5 +1,7 @@
 package com.ccube.pod.domain;
 
+import com.ccube.pod.repository.IdGenerator;
+
 public class User {
 
 	private long uid;
@@ -11,7 +13,7 @@ public class User {
 
 	public User(long uid, String fullName, String mobile) {
 		super();
-		this.uid = uid;
+		this.uid =IdGenerator.getUid();
 		this.fullName = fullName;
 		this.mobile = mobile;
 	}

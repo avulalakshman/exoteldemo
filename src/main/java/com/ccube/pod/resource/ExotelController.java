@@ -90,6 +90,14 @@ public class ExotelController {
 		 receiverService.deleteReceiver(rid);
 	}
 	
+	@Path("/deleteuser")
+	@POST
+	@Produces(value = { MediaType.APPLICATION_JSON })
+	@Consumes(value = { MediaType.APPLICATION_JSON })
+	public void deleteUser(@QueryParam("uid") long uid) {
+		 userService.deleteReceiver(uid);
+	}
+	
 	@Path("/getallreceivers")
 	@GET
 	@Produces(value = { MediaType.APPLICATION_JSON })

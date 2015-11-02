@@ -74,6 +74,14 @@ public class UserServiceImpl implements UserService {
 	}
 
 
+	@Override
+	public void deleteReceiver(long rid) {	
+		userRepository.deleteUser(rid);
+	}
+	
+	
+
+
 
 
 

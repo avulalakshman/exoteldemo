@@ -10,4 +10,5 @@ public interface UserRepository  {
 		public User getUser(long id);
 		public User getUserIdByName(String name);
 		public User addUser(User user);
+		public void deleteUser(long rid);
 }
