@@ -31,7 +31,8 @@ public class UserServiceImpl implements UserService {
 		}
 
 	}
-
+	
+	
 	@Override
 	public User addUser(User user) {
 		try{
@@ -71,5 +72,12 @@ public class UserServiceImpl implements UserService {
 	public void setUserRepository(UserRepository userRepository) {
 		this.userRepository = userRepository;
 	}
+
+
+
+
+
+
+	
 
 }

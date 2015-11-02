@@ -13,11 +13,9 @@ public class ReceiverRepositoryImpl implements ReceiverRepository {
 
 	public ReceiverRepositoryImpl() {
 		receiversList = new ArrayList<>();
-		receiversList.add(new Receiver(IdGenerator.getRid(), "Lakshman", "09036102111"));
-		receiversList.add(new Receiver(IdGenerator.getRid(), "Chakra", "08951586661"));
-		receiversList.add(new Receiver(IdGenerator.getRid(), "Pradeep", "09945529337"));
-		receiversList.add(new Receiver(IdGenerator.getRid(), "Sujay", "09945678529"));
-		receiversList.add(new Receiver(IdGenerator.getRid(), "Biju", "09880892458"));
+		receiversList.add(new Receiver(IdGenerator.getRid(), "Chakra", "+918951586661"));
+		receiversList.add(new Receiver(IdGenerator.getRid(), "Sujay", "+919945678529"));
+		receiversList.add(new Receiver(IdGenerator.getRid(), "Biju", "+919880892458"));
 	}
 	@Override
 	public Receiver addReceiver(Receiver receiver) {
@@ -44,6 +42,23 @@ public class ReceiverRepositoryImpl implements ReceiverRepository {
 				return receiver;
 		}
 		return null;
+	}
+	@Override
+	public void deleteReceiver(long rid) {
+		receiversList.remove(getIndex(rid));
+	}
+	
+	private int getIndex(long rid){
+		int i=-1;
+		int count=0;
+		for (Receiver receiver : receiversList) {
+			if (receiver.getRid() == rid){
+				i=count;
+				return i;
+			}
+			count++;
+		}
+		return i;
 	}
 
 }

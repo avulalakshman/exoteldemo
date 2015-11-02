@@ -43,34 +43,69 @@ public class ExotelController {
 
 	private Map<String, CallDetails> currentCalls = new HashMap<>();
 
-	
-	private static final Logger LOGGER=org.slf4j.LoggerFactory.getLogger(ExotelController.class.getName());
-	
+	private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(ExotelController.class.getName());
+
 	@Path("/addreceiver")
 	@POST
 	@Produces(value = { MediaType.APPLICATION_JSON })
 	@Consumes(value = { MediaType.APPLICATION_JSON })
 	public Receiver addReceiver(Receiver receiver) {
-		receiver=receiverService.addReceiver(receiver);
+		receiver = receiverService.addReceiver(receiver);
 		return receiver;
 	}
-	
+
 	@Path("/adduser")
 	@POST
 	@Produces(value = { MediaType.APPLICATION_JSON })
 	@Consumes(value = { MediaType.APPLICATION_JSON })
 	public User addUser(User user) {
-		user=userService.addUser(user);
+		user = userService.addUser(user);
 		return user;
 	}
+
+	@Path("/getuser")
+	@GET
+	@Produces(value = { MediaType.APPLICATION_JSON })
+	@Consumes(value = { MediaType.APPLICATION_JSON })
+	public User getUser(@QueryParam("id") long uid) {
+		User user = userService.getUser(uid);
+		return user;
+	}
+
+	@Path("/getreceiver")
+	@GET
+	@Produces(value = { MediaType.APPLICATION_JSON })
+	@Consumes(value = { MediaType.APPLICATION_JSON })
+	public Receiver getReceiver(@QueryParam("rid") long rid) {
+		Receiver receiver = receiverService.getReceiver(rid);
+		return receiver;
+	}
 	
-	@Path("/getallreceivers")
+
+	@Path("/deletereceiver")
+	@POST
+	@Produces(value = { MediaType.APPLICATION_JSON })
+	@Consumes(value = { MediaType.APPLICATION_JSON })
+	public void deleteReceiver(@QueryParam("rid") long rid) {
+		 receiverService.deleteReceiver(rid);
+	}
+	
+	@Path("/allreceivers")
 	@GET
 	@Produces(value = { MediaType.APPLICATION_JSON })
 	public List<Receiver> getAllReceivers() {
 		List<Receiver> receiversList = receiverService.listAllReceivers();
 		LOGGER.info("Receivers List :" + receiversList);
 		return receiversList;
+	}
+
+	@Path("/allusers")
+	@GET
+	@Produces(value = { MediaType.APPLICATION_JSON })
+	public List<User> getAllUsers() {
+		List<User> usersList = userService.listUser();
+		LOGGER.info("Users List :" + usersList);
+		return usersList;
 	}
 
 	@Path("/getuseridbyname")
@@ -139,26 +174,20 @@ public class ExotelController {
 			LOGGER.info("PassThru is part of params...");
 		}
 		LOGGER.info("Call Sid :" + callSid + " and Call Details :" + callDetails);
-		// Appending mobile number with the +91 
-		String mobile = getMobileNumber(callDetails.getReceiver().getMobile());
+		// Appending mobile number with the +91
+		String mobile = callDetails.getReceiver().getMobile();
 		return mobile;
 	}
 
-	private String getMobileNumber(String mobile) {
-
-		if (mobile != null) {
-			mobile = mobile.trim();
-			if (mobile.length() == 13) {
-				return mobile;
-			} else if (mobile.length() == 11) {
-				mobile = mobile.substring(1, 10);
-				return "+91" + mobile;
-			} else if (mobile.length() == 10) {
-				return "+91" + mobile;
-			}
-		}
-		throw new IllegalArgumentException("Mobile number is not found");
-	}
+	/*
+	 * private String getMobileNumber(String mobile) {
+	 * 
+	 * if (mobile != null) { mobile = mobile.trim(); if (mobile.length() == 13)
+	 * { return mobile; } else if (mobile.length() == 11) { mobile =
+	 * mobile.substring(1, 10); return "+91" + mobile; } else if
+	 * (mobile.length() == 10) { return "+91" + mobile; } } throw new
+	 * IllegalArgumentException("Mobile number is not found"); }
+	 */
 
 	@Path("/oncallcompleted")
 	@GET
@@ -185,7 +214,7 @@ public class ExotelController {
 		CallDetails callDetails = currentCalls.get(callSid);
 		String timeSec = queryParams.getFirst("Duration");
 		currentCalls.remove(callSid);
-		
+
 		LOGGER.info(callDetails.getUser().getMobile() + " made call : " + callDetails.getReceiver().getMobile()
 				+ " Time in seconds " + timeSec);
 		LOGGER.info("Current calls :" + currentCalls);

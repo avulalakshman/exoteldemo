@@ -58,6 +58,11 @@ public class ReceiverServiceImpl implements ReceiverService {
 		this.receiverRepository = receiverRepository;
 	}
 
+	@Override
+	public void deleteReceiver(long rid) {	
+		receiverRepository.deleteReceiver(rid);
+	}
+
 	
 
 }

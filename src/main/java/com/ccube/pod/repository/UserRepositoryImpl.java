@@ -14,8 +14,8 @@ public class UserRepositoryImpl implements UserRepository {
 
 	public UserRepositoryImpl() {
 
-		User user1 = new User(1, "Shalini", "09900122277");
-		User user2 = new User(2, "Venkatesh", "09880366899");
+		User user1 = new User(1, "Shalini", "+919900122277");
+		User user2 = new User(2, "Venkatesh", "+919880366899");
 		
 		users.add(user1);
 		users.add(user2);

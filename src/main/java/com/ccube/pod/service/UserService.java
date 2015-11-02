@@ -10,5 +10,5 @@ public interface UserService {
 			public User getUser(long rid);
 			long getUserIdByName(String name);
 			public User addUser(User user);
-			
+						
 }

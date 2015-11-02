@@ -29,20 +29,53 @@
 
 	<div class="container">
 		<div class="row">
+			<div class="col-md-6">
+				<h3 class="well" id="rlist">Receivers List</h3>
+
+				<table id="table1" class="table hidden">
+					<tr>
+						<th>Rid</th>
+						<th>Full Name</th>
+						<th>Mobile</th>
+						<th>Edit</th>
+						<th>Delete</th>
+					</tr>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+			<div class="col-md-6">
+				<h3 class="well" id="ulist">Users List</h3>
+
+				<table id="table2" class="table hidden">
+					<tr>
+						<th>Rid</th>
+						<th>Full Name</th>
+						<th>Mobile</th>
+						<th>Edit</th>
+						<th>Delete</th>
+					</tr>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="row">
 			<div class="row">
 				<div class="text-center" id="message"></div>
 			</div>
 			<div class="col-md-6">
 				<h2>Add Receiver</h2>
 				<form role="form" id="receiverform">
+				<input type="hidden" id="rid">
 					<div class="form-group">
 						<label for="Name">Name:</label> <input type="text"
 							class="form-control" id="rname" placeholder="Enter Name">
 					</div>
 					<div class="form-group">
-						<label for="mobile">Mobile:</label> <input type="number"
+						<label for="mobile">Mobile:</label> <input type="text"
 							class="form-control" id="rmobile" name="rmobile"
-							placeholder="Enter 10 digit mobile number">
+							placeholder="Enter a valid mobile number">
 					</div>
 					<button type="button" id="addreceiver" class="btn btn-default">Add
 						Receiver</button>
@@ -51,14 +84,15 @@
 			<div class="col-md-6">
 				<h2>Add User</h2>
 				<form role="form" id="userform">
+					<input type="hidden" id="uid"/>
 					<div class="form-group">
 						<label for="Name">Name:</label> <input type="text"
 							class="form-control" id="uname" placeholder="Enter Name">
 					</div>
 					<div class="form-group">
-						<label for="mobile">Mobile:</label> <input type="number"
+						<label for="mobile">Mobile:</label> <input type="text"
 							class="form-control" id="umobile" name="umobile"
-							placeholder="Enter 10 digit mobile number">
+							placeholder="Enter a valid mobile number">
 					</div>
 					<button type="button" id="adduser" class="btn btn-default">Add
 						User</button>
@@ -70,69 +104,190 @@
 	</div>
 
 	<script type="text/javascript">
+		function addorupdate(url, user, message) {
+
+			$.ajax({
+
+				url : url,
+				type : 'post',
+				dataType : 'json',
+				contentType : "application/json; charset=utf-8",
+				success : function(data) {
+					$("#message").empty()
+							.append(
+									"<div class='well'>" + JSON.stringify(data)
+											+ "--> " + Message
+											+ " successfully]</div>");
+					$("#receiverform").reset();
+				},
+				data : JSON.stringify(user)
+			});
+		}
+		function deleteReceiver(rid) {
+			var url = "http://localhost:8080/exotel/deletereceiver?rid=" + rid;
+
+			$.ajax({
+				url : url,
+				type : 'post',
+				success : function(data) {
+					$("#rlist").click();
+				}
+			});
+
+		}
+		function editreceiver(rid) {
+			var url = "http://localhost:8080/exotel/getreceiver?rid=" + rid;
+			$.ajax({
+				url : url,
+				type : 'get',
+				dataType : 'json',
+				contentType : "application/json; charset=utf-8",
+				success : function(data) {
+					$("#rid").val(data.rid)
+					$("#rname").val(data.fullName);
+					$("#rmobile").val(data.mobile);
+					$("#addreceiver").attr("id", "updatereceiver");
+					$("#updatereceiver").empty().append("Update Receiver");
+
+				}
+			});
+
+		}
+
+		function deleteUser(uid) {
+
+		}
 		$(function() {
-			$("#adduser")
+			$("#rlist")
 					.click(
 							function() {
-								var name = $("#uname").val();
-								var mobile = $("#umobile").val();
-								/*https://pure-earth-5743.herokuapp.com/exotel/adduser*/
-								var user = {
-									"fullName" : name,
-									"mobile" : mobile
-								}
-								$
-										.ajax({
-											url : "https://pure-earth-5743.herokuapp.com/exotel/adduser",
-											//url:"http://localhost:8080/exotel/adduser",
-											type : 'post',
-											dataType : 'json',
-											contentType : "application/json; charset=utf-8",
-											success : function(data) {
-												$("#message")
-														.empty()
-														.append(
-																"<div class='well'>"
-																		+ JSON
-																				.stringify(data)
-																		+ "--> [User added successfully]</div>");
-												$("#receiverform").reset();
-											},
-											data : JSON.stringify(user)
-										});
-							});
-
-			$("#addreceiver")
-					.click(
-							function() {
-								var name = $("#rname").val();
-								var mobile = $("#rmobile").val();
-
-								var user = {
-									"fullName" : name,
-									"mobile" : mobile
-								}
+								var url = "http://localhost:8080/exotel/allreceivers";
 
 								$
 										.ajax({
-											url : "https://pure-earth-5743.herokuapp.com/exotel/addreceiver",
-											//url:"http://localhost:8080/exotel/addreceiver",
-											type : 'post',
-											dataType : 'json',
+											type : "GET",
+											url : url,
 											contentType : "application/json; charset=utf-8",
+											dataType : "json",
 											success : function(data) {
-												$("#message")
-														.empty()
-														.append(
-																"<div class='well'>"
-																		+ JSON
-																				.stringify(data)
-																		+ "--> [Receiver added successfully]</div>");
-												$("#userform").reset();
+
+												if (data) {
+													var len = data.length;
+													var txt = "";
+													if (len > 0) {
+														for (var i = 0; i < len; i++) {
+															var id = data[i].rid;
+															txt += "<tr><td>"
+																	+ data[i].rid
+																	+ "</td><td>"
+																	+ data[i].fullName
+																	+ "</td><td>"
+																	+ data[i].mobile
+																	+ "</td><td><button onclick=editreceiver("
+																	+ id
+																	+ ")>Edit</button></td><td><button onclick=deleteReceiver("
+																	+ id
+																	+ ");>Delete</button></td></tr>";
+
+														}
+														if (txt != "") {
+															$("#table1")
+																	.empty()
+																	.append(txt)
+																	.removeClass(
+																			"hidden");
+														}
+													}
+													alert(txt);
+												}
 											},
-											data : JSON.stringify(user)
+											error : function(jqXHR, textStatus,
+													errorThrown) {
+												alert('error: ' + textStatus
+														+ ': ' + errorThrown);
+											}
 										});
+								return false;
+
 							});
+
+			$("#ulist")
+					.click(
+							function() {
+								var url = "http://localhost:8080/exotel/allusers";
+								$
+										.ajax({
+											type : "GET",
+											url : url,
+											contentType : "application/json; charset=utf-8",
+											dataType : "json",
+											success : function(data) {
+												if (data) {
+													var len = data.length;
+													var txt = "";
+													if (len > 0) {
+														for (var i = 0; i < len; i++) {
+															var id = data[i].uid;
+															txt += "<tr><td>"
+																	+ data[i].uid
+																	+ "</td><td>"
+																	+ data[i].fullName
+																	+ "</td><td>"
+																	+ data[i].mobile
+																	+ "</td><button  onclick=edituser("
+																	+ id
+																	+ ")>Edit</button><td></td><td><button id='deluid' onclick=deleteUser("
+																	+ id
+																	+ ");>Delete</button></td></tr>";
+
+														}
+														if (txt != "") {
+															$("#table2")
+																	.empty()
+																	.append(txt)
+																	.removeClass(
+																			"hidden");
+														}
+													}
+													alert(txt);
+												}
+											},
+											error : function(jqXHR, textStatus,
+													errorThrown) {
+												alert('error: ' + textStatus
+														+ ': ' + errorThrown);
+											}
+										});
+								return false;
+							});
+
+			$("#adduser").click(function() {
+				var name = $("#uname").val();
+				var mobile = $("#umobile").val();
+				/*https://pure-earth-5743.herokuapp.com/exotel/adduser*/
+				var user = {
+					"fullName" : name,
+					"mobile" : mobile
+				};
+				var url = "http://localhost:8080/exotel/adduser";
+				var message = "User added";
+				addorupdate(url, user, message);
+
+			});
+
+			$("#addreceiver").click(function() {
+				var name = $("#rname").val();
+				var mobile = $("#rmobile").val();
+
+				var user = {
+					"fullName" : name,
+					"mobile" : mobile
+				}
+				var url = "http://localhost:8080/exotel/addreceiver";
+				var message = "Receiver  added";
+				addorupdate(url, user, message);
+			});
+
 		})
 	</script>
 </body>
