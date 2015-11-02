@@ -90,7 +90,7 @@ public class ExotelController {
 		 receiverService.deleteReceiver(rid);
 	}
 	
-	@Path("/allreceivers")
+	@Path("/getallreceivers")
 	@GET
 	@Produces(value = { MediaType.APPLICATION_JSON })
 	public List<Receiver> getAllReceivers() {
@@ -99,7 +99,7 @@ public class ExotelController {
 		return receiversList;
 	}
 
-	@Path("/allusers")
+	@Path("/getallusers")
 	@GET
 	@Produces(value = { MediaType.APPLICATION_JSON })
 	public List<User> getAllUsers() {
