@@ -163,6 +163,7 @@ public class ExotelController {
 	@Path("/getdailtonumber")
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
+	
 	public String getDailToNumber(@Context UriInfo uriInfo) {
 		MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
 		LOGGER.info("Query params of getDialToNumber..." + queryParams);
