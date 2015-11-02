@@ -67,7 +67,7 @@
 			<div class="col-md-6">
 				<h2>Add Receiver</h2>
 				<form role="form" id="receiverform">
-				<input type="hidden" id="rid">
+					<input type="hidden" id="rid">
 					<div class="form-group">
 						<label for="Name">Name:</label> <input type="text"
 							class="form-control" id="rname" placeholder="Enter Name">
@@ -84,7 +84,7 @@
 			<div class="col-md-6">
 				<h2>Add User</h2>
 				<form role="form" id="userform">
-					<input type="hidden" id="uid"/>
+					<input type="hidden" id="uid" />
 					<div class="form-group">
 						<label for="Name">Name:</label> <input type="text"
 							class="form-control" id="uname" placeholder="Enter Name">
@@ -104,6 +104,7 @@
 	</div>
 
 	<script type="text/javascript">
+	var BASE_URL="https://pure-earth-5743.herokuapp.com/exotel/";
 		function addorupdate(url, user, message) {
 
 			$.ajax({
@@ -124,7 +125,7 @@
 			});
 		}
 		function deleteReceiver(rid) {
-			var url = "http://localhost:8080/exotel/deletereceiver?rid=" + rid;
+			var url = BASE_URL+"deletereceiver?rid=" + rid;
 
 			$.ajax({
 				url : url,
@@ -136,7 +137,7 @@
 
 		}
 		function editreceiver(rid) {
-			var url = "http://localhost:8080/exotel/getreceiver?rid=" + rid;
+			var url = BASE_URL+"getreceiver?rid=" + rid;
 			$.ajax({
 				url : url,
 				type : 'get',
@@ -161,7 +162,7 @@
 			$("#rlist")
 					.click(
 							function() {
-								var url = "http://localhost:8080/exotel/getallreceivers";
+								var url = BASE_URL+"getallreceivers";
 
 								$
 										.ajax({
@@ -214,7 +215,7 @@
 			$("#ulist")
 					.click(
 							function() {
-								var url = "http://localhost:8080/exotel/getallusers";
+								var url = BASE_URL+"getallusers";
 								$
 										.ajax({
 											type : "GET",
@@ -269,7 +270,24 @@
 					"fullName" : name,
 					"mobile" : mobile
 				};
-				var url = "http://localhost:8080/exotel/adduser";
+				var url = BASE_URL+"adduser";
+				var message = "User added";
+				addorupdate(url, user, message);
+
+			});
+
+			$("#updateuser").click(function() {
+				var uid = $("#uid").val();
+				var name = $("#uname").val();
+				var mobile = $("#umobile").val();
+
+				/*https://pure-earth-5743.herokuapp.com/exotel/adduser*/
+				var user = {
+					"uid" : uid,
+					"fullName" : name,
+					"mobile" : mobile
+				};
+				var url = BASE_URL+"adduser";
 				var message = "User added";
 				addorupdate(url, user, message);
 
@@ -283,7 +301,22 @@
 					"fullName" : name,
 					"mobile" : mobile
 				}
-				var url = "http://localhost:8080/exotel/addreceiver";
+				var url = BASE_URL+"addreceiver";
+				var message = "Receiver  added";
+				addorupdate(url, user, message);
+			});
+
+			$("#updatereceiver").click(function() {
+				var rid = $("#rid");
+				var name = $("#rname").val();
+				var mobile = $("#rmobile").val();
+
+				var user = {
+					"rid" : rid,
+					"fullName" : name,
+					"mobile" : mobile
+				}
+				var url = BASE_URL+"addreceiver";
 				var message = "Receiver  added";
 				addorupdate(url, user, message);
 			});
